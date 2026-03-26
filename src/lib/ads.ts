@@ -38,7 +38,7 @@ export async function createAd(ad: {
   });
   const inserted = await db.execute({
     sql: "SELECT * FROM ads WHERE id = ?",
-    args: [result.lastInsertRowid],
+    args: [result.lastInsertRowid!],
   });
   return inserted.rows[0] as unknown as Ad;
 }
