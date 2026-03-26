@@ -1,26 +1,30 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-navy-950: #0B1120;
+  --color-navy-900: #0F172A;
+  --color-navy-800: #1E293B;
+  --color-navy-700: #334155;
+  --color-navy-600: #475569;
+  --color-accent: #F59E0B;
+  --color-accent-hover: #D97706;
+  --color-primary: #2563EB;
+  --color-primary-hover: #1D4ED8;
+  --color-card-bg: #151D2E;
+  --color-card-border: #1E293B;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-serif: "Georgia", "Times New Roman", serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-navy-950);
+  color: #E2E8F0;
+  font-family: var(--font-sans);
+}
+
+/* Italic serif emphasis — matches Acting Office style */
+.text-emphasis {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--color-accent);
 }
