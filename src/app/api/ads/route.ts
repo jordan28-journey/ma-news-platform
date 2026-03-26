@@ -9,7 +9,7 @@ export async function GET() {
   if (!authed) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const ads = getAllAds();
+  const ads = await getAllAds();
   return NextResponse.json({ ads });
 }
 
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const body = await request.json();
-  const ad = createAd({
+  const ad = await createAd({
     slot: body.slot,
     label: body.label || "",
     image_url: body.image_url || "",
@@ -35,9 +35,9 @@ export async function PATCH(request: Request) {
   }
   const { id, action, ...fields } = await request.json();
   if (action === "toggle") {
-    toggleAdActive(id);
+    await toggleAdActive(id);
   } else {
-    updateAd(id, fields);
+    await updateAd(id, fields);
   }
   return NextResponse.json({ success: true });
 }
@@ -48,6 +48,6 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const { id } = await request.json();
-  deleteAd(id);
+  await deleteAd(id);
   return NextResponse.json({ success: true });
 }

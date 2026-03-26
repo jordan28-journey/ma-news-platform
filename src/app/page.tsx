@@ -4,10 +4,10 @@ import DealsFilter from "@/components/DealsFilter";
 
 export const dynamic = "force-dynamic";
 
-export default function HomePage() {
-  const deals = getAllDeals();
-  const sidebarAd = getActiveAd("sidebar");
-  const leaderboardAd = getActiveAd("leaderboard");
+export default async function HomePage() {
+  const deals = await getAllDeals();
+  const sidebarAd = await getActiveAd("sidebar");
+  const leaderboardAd = await getActiveAd("leaderboard");
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-12">

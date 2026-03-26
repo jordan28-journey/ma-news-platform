@@ -1,4 +1,4 @@
-import { getDealBySlug, getAllDeals } from "@/lib/deals";
+import { getDealBySlug } from "@/lib/deals";
 import { getActiveAd } from "@/lib/ads";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -11,13 +11,13 @@ export default async function DealPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const deal = getDealBySlug(slug);
+  const deal = await getDealBySlug(slug);
 
   if (!deal || !deal.published) {
     notFound();
   }
 
-  const leaderboardAd = getActiveAd("leaderboard");
+  const leaderboardAd = await getActiveAd("leaderboard");
 
   const paragraphs = deal.body
     ? deal.body.split("\n").filter((p) => p.trim())

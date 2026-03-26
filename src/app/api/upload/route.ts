@@ -40,7 +40,7 @@ export async function POST(request: Request) {
       deal_date: string;
     }>;
 
-    const count = importDealsFromCSV(rows);
+    const count = await importDealsFromCSV(rows);
 
     return NextResponse.json({ success: true, count });
   } catch (err) {

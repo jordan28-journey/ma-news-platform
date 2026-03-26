@@ -10,7 +10,7 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const deals = getAllDeals(true); // include unpublished for admin
+  const deals = await getAllDeals(true); // include unpublished for admin
   return NextResponse.json({ deals });
 }
 
@@ -22,7 +22,7 @@ export async function PATCH(request: Request) {
 
   const { id, action } = await request.json();
   if (action === "toggle") {
-    toggleDealPublished(id);
+    await toggleDealPublished(id);
     return NextResponse.json({ success: true });
   }
 
@@ -36,6 +36,6 @@ export async function DELETE(request: Request) {
   }
 
   const { id } = await request.json();
-  deleteDeal(id);
+  await deleteDeal(id);
   return NextResponse.json({ success: true });
 }
