@@ -1,11 +1,13 @@
-import { getAllDeals, seedIfEmpty } from "@/lib/deals";
-import DealCard from "@/components/DealCard";
+import { getAllDeals } from "@/lib/deals";
+import { getActiveAd } from "@/lib/ads";
+import DealsFilter from "@/components/DealsFilter";
 
 export const dynamic = "force-dynamic";
 
 export default function HomePage() {
-  seedIfEmpty();
   const deals = getAllDeals();
+  const sidebarAd = getActiveAd("sidebar");
+  const leaderboardAd = getActiveAd("leaderboard");
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-12">
@@ -22,54 +24,98 @@ export default function HomePage() {
         </p>
       </section>
 
-      {/* Featured Deal */}
+      {/* Featured Deal + Sidebar Ad */}
       {deals.length > 0 && (
         <section className="mb-12">
-          <a href={`/deals/${deals[0].slug}`} className="group block">
-            <div className="bg-card-bg border border-card-border rounded-2xl p-8 md:p-10 transition-all duration-200 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5">
-              <div className="flex flex-wrap items-center gap-3 mb-4">
-                <span className="text-xs font-semibold text-navy-950 bg-accent px-3 py-1 rounded-full">
-                  Featured Deal
+          <div className={`flex gap-6 ${sidebarAd ? "flex-col lg:flex-row lg:items-stretch" : ""}`}>
+            {/* Featured Deal */}
+            <a href={`/deals/${deals[0].slug}`} className="group block flex-1 min-w-0">
+              <div className="bg-card-bg border border-card-border rounded-2xl p-8 md:p-10 transition-all duration-200 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 h-full">
+                <div className="flex flex-wrap items-center gap-3 mb-4">
+                  <span className="text-xs font-semibold text-navy-950 bg-accent px-3 py-1 rounded-full">
+                    Featured Deal
+                  </span>
+                  <span className="text-sm font-medium text-accent">
+                    {deals[0].deal_value}
+                  </span>
+                  <time
+                    className="text-sm text-navy-600 ml-auto"
+                    dateTime={deals[0].deal_date}
+                  >
+                    {new Date(deals[0].deal_date).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </time>
+                </div>
+                <h2 className="text-2xl md:text-3xl font-bold text-white mb-3 group-hover:text-primary transition-colors">
+                  {deals[0].title}
+                </h2>
+                <p className="text-sm text-navy-600 mb-2">{deals[0].firms}</p>
+                <p className="text-slate-400 leading-relaxed">
+                  {deals[0].summary}
+                </p>
+                <span className="inline-block mt-5 text-sm text-primary font-medium group-hover:underline">
+                  Read full article &rarr;
                 </span>
-                <span className="text-sm font-medium text-accent">
-                  {deals[0].deal_value}
-                </span>
-                <time
-                  className="text-sm text-navy-600 ml-auto"
-                  dateTime={deals[0].deal_date}
-                >
-                  {new Date(deals[0].deal_date).toLocaleDateString("en-GB", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </time>
               </div>
-              <h2 className="text-2xl md:text-3xl font-bold text-white mb-3 group-hover:text-primary transition-colors">
-                {deals[0].title}
-              </h2>
-              <p className="text-sm text-navy-600 mb-2">{deals[0].firms}</p>
-              <p className="text-slate-400 leading-relaxed max-w-3xl">
-                {deals[0].summary}
-              </p>
-              <span className="inline-block mt-5 text-sm text-primary font-medium group-hover:underline">
-                Read full article &rarr;
-              </span>
-            </div>
-          </a>
+            </a>
+
+            {/* Sidebar Ad — 300×auto, matches featured deal height */}
+            {sidebarAd && (
+              <div className="flex-shrink-0 w-[300px] hidden lg:block">
+                {sidebarAd.image_url ? (
+                  <a
+                    href={sidebarAd.link_url || "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block h-full"
+                  >
+                    <img
+                      src={sidebarAd.image_url}
+                      alt={sidebarAd.label || "Advertisement"}
+                      className="rounded-xl border border-card-border w-[300px] h-full object-cover"
+                    />
+                  </a>
+                ) : (
+                  <div className="w-[300px] h-full rounded-xl border border-dashed border-card-border bg-card-bg flex items-center justify-center">
+                    <span className="text-xs text-navy-600">Ad Space &middot; 300&times;250</span>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </section>
       )}
 
       {/* Deal Grid */}
-      {deals.length > 1 && (
-        <section>
-          <h2 className="text-xl font-semibold text-white mb-6">
-            Latest Deals
-          </h2>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {deals.slice(1).map((deal) => (
-              <DealCard key={deal.id} deal={deal} />
-            ))}
+      {deals.length > 1 && <DealsFilter deals={deals.slice(1)} />}
+
+      {/* Leaderboard Ad — 728x90 */}
+      {leaderboardAd && (
+        <section className="mt-12">
+          <div className="flex justify-center">
+            {leaderboardAd.image_url ? (
+              <a
+                href={leaderboardAd.link_url || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+              >
+                <img
+                  src={leaderboardAd.image_url}
+                  alt={leaderboardAd.label || "Advertisement"}
+                  width={728}
+                  height={90}
+                  className="rounded-xl border border-card-border max-w-full h-auto"
+                />
+              </a>
+            ) : (
+              <div className="w-[728px] max-w-full h-[90px] rounded-xl border border-dashed border-card-border bg-card-bg flex items-center justify-center">
+                <span className="text-xs text-navy-600">Ad Space &middot; 728&times;90</span>
+              </div>
+            )}
           </div>
         </section>
       )}

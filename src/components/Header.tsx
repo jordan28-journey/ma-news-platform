@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Header() {
   return (
-    <header className="border-b border-card-border bg-navy-900/80 backdrop-blur-sm sticky top-0 z-50">
+    <header className="border-b border-card-border bg-navy-900/80">
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3 group">
           {/* Acting Office logo mark */}
@@ -18,20 +18,6 @@ export default function Header() {
             </span>
           </div>
         </Link>
-        <nav className="flex items-center gap-6">
-          <Link
-            href="/"
-            className="text-sm text-slate-300 hover:text-white transition-colors"
-          >
-            Deals
-          </Link>
-          <Link
-            href="/admin"
-            className="text-sm px-4 py-2 rounded-full bg-primary hover:bg-primary-hover text-white transition-colors"
-          >
-            Admin
-          </Link>
-        </nav>
       </div>
     </header>
   );

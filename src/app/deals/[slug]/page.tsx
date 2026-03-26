@@ -1,4 +1,5 @@
-import { getDealBySlug, getAllDeals, seedIfEmpty } from "@/lib/deals";
+import { getDealBySlug, getAllDeals } from "@/lib/deals";
+import { getActiveAd } from "@/lib/ads";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 
@@ -9,13 +10,14 @@ export default async function DealPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  seedIfEmpty();
   const { slug } = await params;
   const deal = getDealBySlug(slug);
 
   if (!deal || !deal.published) {
     notFound();
   }
+
+  const leaderboardAd = getActiveAd("leaderboard");
 
   const paragraphs = deal.body
     ? deal.body.split("\n").filter((p) => p.trim())
@@ -67,6 +69,34 @@ export default async function DealPage({
           ))}
         </div>
       </article>
+
+      {/* Leaderboard Ad — 728x90 */}
+      {leaderboardAd && (
+        <section className="mt-12">
+          <div className="flex justify-center">
+            {leaderboardAd.image_url ? (
+              <a
+                href={leaderboardAd.link_url || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+              >
+                <img
+                  src={leaderboardAd.image_url}
+                  alt={leaderboardAd.label || "Advertisement"}
+                  width={728}
+                  height={90}
+                  className="rounded-xl border border-card-border max-w-full h-auto"
+                />
+              </a>
+            ) : (
+              <div className="w-[728px] max-w-full h-[90px] rounded-xl border border-dashed border-card-border bg-card-bg flex items-center justify-center">
+                <span className="text-xs text-navy-600">Ad Space &middot; 728&times;90</span>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

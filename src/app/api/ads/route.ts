@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAllDeals, toggleDealPublished, deleteDeal } from "@/lib/deals";
+import { getAllAds, createAd, updateAd, toggleAdActive, deleteAd } from "@/lib/ads";
 import { isAuthenticated } from "../auth/route";
 
 export const dynamic = "force-dynamic";
@@ -9,9 +9,23 @@ export async function GET() {
   if (!authed) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+  const ads = getAllAds();
+  return NextResponse.json({ ads });
+}
 
-  const deals = getAllDeals(true); // include unpublished for admin
-  return NextResponse.json({ deals });
+export async function POST(request: Request) {
+  const authed = await isAuthenticated();
+  if (!authed) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  const body = await request.json();
+  const ad = createAd({
+    slot: body.slot,
+    label: body.label || "",
+    image_url: body.image_url || "",
+    link_url: body.link_url || "",
+  });
+  return NextResponse.json({ ad });
 }
 
 export async function PATCH(request: Request) {
@@ -19,14 +33,13 @@ export async function PATCH(request: Request) {
   if (!authed) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
-  const { id, action } = await request.json();
+  const { id, action, ...fields } = await request.json();
   if (action === "toggle") {
-    toggleDealPublished(id);
-    return NextResponse.json({ success: true });
+    toggleAdActive(id);
+  } else {
+    updateAd(id, fields);
   }
-
-  return NextResponse.json({ error: "Unknown action" }, { status: 400 });
+  return NextResponse.json({ success: true });
 }
 
 export async function DELETE(request: Request) {
@@ -34,8 +47,7 @@ export async function DELETE(request: Request) {
   if (!authed) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
   const { id } = await request.json();
-  deleteDeal(id);
+  deleteAd(id);
   return NextResponse.json({ success: true });
 }
