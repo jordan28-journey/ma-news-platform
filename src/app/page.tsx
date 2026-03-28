@@ -24,6 +24,51 @@ export default async function HomePage() {
         </p>
       </section>
 
+      {/* Stats Counter */}
+      {deals.length > 0 && (() => {
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth();
+        const monthName = now.toLocaleDateString("en-GB", { month: "long" });
+
+        const dealsThisYear = deals.filter((d) => {
+          const date = new Date(d.deal_date);
+          return date.getFullYear() === currentYear;
+        });
+
+        const dealsThisMonth = dealsThisYear.filter((d) => {
+          const date = new Date(d.deal_date);
+          return date.getMonth() === currentMonth;
+        });
+
+        const firmCounts: Record<string, number> = {};
+        for (const d of dealsThisYear) {
+          for (const firm of d.firms.split(",").map((f) => f.trim()).filter(Boolean)) {
+            firmCounts[firm] = (firmCounts[firm] || 0) + 1;
+          }
+        }
+        const topFirm = Object.entries(firmCounts).sort((a, b) => b[1] - a[1])[0];
+
+        return (
+          <section className="mb-12 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-card-bg border border-card-border rounded-xl p-6 text-center">
+              <p className="text-3xl font-bold text-accent">{dealsThisYear.length}</p>
+              <p className="text-sm text-slate-400 mt-1">Deals in {currentYear}</p>
+            </div>
+            <div className="bg-card-bg border border-card-border rounded-xl p-6 text-center">
+              <p className="text-3xl font-bold text-accent">{dealsThisMonth.length}</p>
+              <p className="text-sm text-slate-400 mt-1">Deals in {monthName}</p>
+            </div>
+            <div className="bg-card-bg border border-card-border rounded-xl p-6 text-center">
+              <p className="text-3xl font-bold text-accent truncate">{topFirm ? topFirm[0] : "—"}</p>
+              <p className="text-sm text-slate-400 mt-1">
+                Most Acquisitive Firm {currentYear}{topFirm ? ` (${topFirm[1]} deals)` : ""}
+              </p>
+            </div>
+          </section>
+        );
+      })()}
+
       {/* Featured Deal + Sidebar Ad */}
       {deals.length > 0 && (
         <section className="mb-12">

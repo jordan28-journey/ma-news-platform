@@ -97,6 +97,15 @@ export async function deleteDeal(id: number): Promise<void> {
   });
 }
 
+export async function getDealsByDateRange(startDate: string, endDate: string): Promise<Deal[]> {
+  await _initPromise;
+  const result = await db.execute({
+    sql: "SELECT * FROM deals WHERE published = 1 AND deal_date >= ? AND deal_date < ? ORDER BY deal_date ASC",
+    args: [startDate, endDate],
+  });
+  return result.rows as unknown as Deal[];
+}
+
 export async function importDealsFromCSV(
   rows: Array<{
     title: string;

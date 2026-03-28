@@ -180,12 +180,20 @@ export default function AdminDashboard() {
             {deals.length} deal{deals.length !== 1 ? "s" : ""} total
           </p>
         </div>
-        <Link
-          href="/admin/upload"
-          className="px-5 py-2.5 rounded-full bg-accent hover:bg-accent-hover text-navy-950 font-medium text-sm transition-colors"
-        >
-          Import CSV
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/admin/insights"
+            className="px-5 py-2.5 rounded-full border border-card-border text-slate-300 hover:bg-navy-800 font-medium text-sm transition-colors"
+          >
+            Insight Reports
+          </Link>
+          <Link
+            href="/admin/upload"
+            className="px-5 py-2.5 rounded-full bg-accent hover:bg-accent-hover text-navy-950 font-medium text-sm transition-colors"
+          >
+            Import CSV
+          </Link>
+        </div>
       </div>
 
       {deals.length === 0 ? (
